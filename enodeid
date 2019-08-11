@@ -35,4 +35,4 @@ container=$(for c in $(docker-compose -f "$BASEDIR/docker-compose.yml" ${frffl-"
 done)
 
 ENODEID=$(docker exec --user xero "$container" /usr/sbin/geth-xero --exec "admin.nodeInfo.enode" attach ipc://./home/xero/.xerom/geth.ipc)
-printf "%s" "$ENODEID" | sed 's/.*\/\//ENODEID: /' | sed 's/@.*//'
+printf "%s\n" "$ENODEID" | sed 's/.*\/\//ENODEID: /' | sed 's/@.*//'
