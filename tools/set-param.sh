@@ -27,11 +27,11 @@ VALUE_FOR_SED=$(echo "$VALUE" | sed -e 's/[\/&]/\\&/g')
 
 case $PARAM in
     NODE_VERSION) 
-        if grep "NODE_VERSION=" "$BASEDIR/../container/limits.conf"; then
-            TEMP=$(sed "s/NODE_VERSION=.*/NODE_VERSION=$VALUE_FOR_SED/g" "$BASEDIR/../container/limits.conf")
-            printf "%s" "$TEMP" > "$BASEDIR/../container/limits.conf"
+        if grep "NODE_VERSION=" "$BASEDIR/../containers/xero/limits.conf"; then
+            TEMP=$(sed "s/NODE_VERSION=.*/NODE_VERSION=$VALUE_FOR_SED/g" "$BASEDIR/../containers/xero/limits.conf")
+            printf "%s" "$TEMP" > "$BASEDIR/../containers/xero/limits.conf"
         else 
-            printf "\nNODE_VERSION=%s" "$VALUE" >> "$BASEDIR/../container/limits.conf"
+            printf "\nNODE_VERSION=%s" "$VALUE" >> "$BASEDIR/../containers/xero/limits.conf"
         fi
     ;;
     bootstrap)
@@ -40,5 +40,16 @@ case $PARAM in
     ;;
     PROJECT)
         printf "PROJECT=%s" "$VALUE" >  "$BASEDIR/../project_id"
+    ;;
+    STAKE_ADDR)
+        printf "STAKE_ADDR=%s" "$VALUE" >  "$BASEDIR/../data/stake_addr"
+    ;;
+    ip)
+        TEMP=$(sed "s/EXTERNAL_IP=.*/EXTERNAL_IP=$VALUE_FOR_SED/g" "$BASEDIR/../.env")
+        printf "%s" "$TEMP" > "$BASEDIR/../.env"
+    ;;
+    IP)
+        TEMP=$(sed "s/EXTERNAL_IP=.*/EXTERNAL_IP=$VALUE_FOR_SED/g" "$BASEDIR/../.env")
+        printf "%s" "$TEMP" > "$BASEDIR/../.env"
     ;;
 esac

@@ -19,21 +19,22 @@
 #  Contact: cryi@tutanota.com
 
 ver=$(./get-version.sh)
-type="XERO_CN"
+type="XERO_XN"
+STAKE_ADDR=$(cat /home/xero/.xerom/stake_addr)
 
 block_number=$(curl -sX POST --url http://localhost:8545 \
     --header 'Cache-Control: no-cache' \
     --header 'Content-Type: application/json' \
-    --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":["latest", false],"id":1}' | \
+    --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":["latest", false],"id":1}' |
     jq .result -r)
-block_count=$(printf "%d\n" $block_number)
+block_count=$(printf "%d\n" "$block_number")
 
-RESULT=$(curl -sX POST --url http://localhost:8545     --header 'Cache-Control: no-cache'     --header 'Content-Type: application/json'     --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
+RESULT=$(curl -sX POST --url http://localhost:8545 --header 'Cache-Control: no-cache' --header 'Content-Type: application/json' --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}')
 syncing=$(printf "%s" "$RESULT" | jq .result -r)
 sync_status=false
 if [ "$syncing" = "false" ]; then
     sync_status=true
-else 
+else
     block_count=$(printf "%d" "$(printf "%s" "$RESULT" | jq .result.currentBlock -r)")
     sync_status=false
 fi
@@ -41,11 +42,26 @@ fi
 RESULT=$(curl -sX POST --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", false],"id":1}' --header 'Cache-Control: no-cache' --header 'Content-Type: application/json' --url http://localhost:8545)
 block_hash=$(printf "%s" "$RESULT" | jq .result.hash -r)
 
-mn_status="not reported"
-if [ "$sync_status" = "false" ]; then
+dashboard_info=$(printf "\n4\n2\n%s\n" "$STAKE_ADDR" | /home/xero/dashboard)
+dashboard_enodeid=$(printf "%s" "$dashboard_info" | grep "Node Id:" | sed 's/Node Id: //g')
+dashboard_ip=$(printf "%s" "$dashboard_info" | grep "Node Ip:" | sed 's/Node Ip: //g')
+
+ENODEID=$(/usr/sbin/geth-xero --exec "admin.nodeInfo.enode" attach ipc://./home/xero/.xerom/geth.ipc)
+
+if ! printf "%s\n" "$ENODEID" | grep -i "$dashboard_enodeid" ||
+    ! printf "%s\n" "$ENODEID" | grep -i "@$dashboard_ip"; then
     mn_status_level="error"
-else 
-    mn_status_level="ok"
+    mn_status="Not Found"
+fi
+
+if [ -z "$mn_status_level" ]; then
+    if [ "$sync_status" = "false" ]; then
+        mn_status_level="warning"
+        mn_status="Not Synchronized"
+    else
+        mn_status_level="ok"
+        mn_status="Active"
+    fi
 fi
 
 printf "\
@@ -56,7 +72,7 @@ BLOCK_HASH: %s
 MN STATUS: %s
 MN STATUS LEVEL: %s
 SYNCED: %s
-" "$type" "$ver" "$block_count" "$block_hash" "$mn_status" "$mn_status_level" "$sync_status" > /home/xero/.xerom/node.info
+" "$type" "$ver" "$block_count" "$block_hash" "$mn_status" "$mn_status_level" "$sync_status" >/home/xero/.xerom/node.info
 
 printf "\
 TYPE: %s

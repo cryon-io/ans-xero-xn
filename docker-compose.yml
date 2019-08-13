@@ -34,13 +34,32 @@ services:
         max-file: '1'
       driver: json-file
 
+  ip-map:
+    restart: always
+    init: true
+    build: ./containers/ip-map
+    stop_grace_period: 2m
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    volumes:       
+      - "./.icc/xero:/xero:ro"
+      - "./.icc/ip-map:/ip-map:rw"
+    logging:
+      options:
+        max-size: '5m'
+        max-file: '1'
+      driver: json-file
+
   mn:
     restart: always
     init: true
-    build: ./container
+    build: ./containers/xero
     stop_grace_period: 2m
     volumes:
       - "./data:/home/xero/.xerom:rw"
+      - "./.icc/xero:/xero:rw"
+      - "./.icc/ip-map:/ip-map:ro"
     pids_limit: 100
     labels:
       - autoheal=true

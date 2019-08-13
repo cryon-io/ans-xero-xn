@@ -18,7 +18,7 @@
 #
 #  Contact: cryi@tutanota.com
 
-if [ -f "/home/etho/waiting_for_external_ip" ]; then
+if [ -f "/home/xero/waiting_for_external_ip" ]; then
     exit 0
 fi
 
