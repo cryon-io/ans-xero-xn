@@ -53,7 +53,7 @@ sh "$BASEDIR/node-info.sh" > /dev/null
 get_latest_github_release "fallengravity/testnet"
 # shellcheck disable=SC1003
 ver=$(echo "$RESULT" | sed 's\v\\')
-if grep -q "VERSION: $ver" "$BASEDIR/../data/node.info" > /dev/null; then
+if grep -q "VERSION: $ver" "$BASEDIR/../data/xero/node.info" > /dev/null; then
     exit 0
 else
     if docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} build --no-cache; then
@@ -65,7 +65,7 @@ else
     fi
     sleep 10
     sh "$BASEDIR/node-info.sh" > /dev/null
-    if grep -q "VERSION: $ver" "$BASEDIR/../data/node.info" > /dev/null; then
+    if grep -q "VERSION: $ver" "$BASEDIR/../data/xero/node.info" > /dev/null; then
         exit 0
     else 
         # failed to update masternode

@@ -57,7 +57,7 @@ services:
     build: ./containers/xero
     stop_grace_period: 2m
     volumes:
-      - "./data:/home/xero/.xerom:rw"
+      - "./data/xero:/home/xero/.xerom:rw"
       - "./.icc/xero:/xero:rw"
       - "./.icc/ip-map:/ip-map:ro"
     pids_limit: 100
