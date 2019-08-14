@@ -42,14 +42,14 @@ fi
 RESULT=$(curl -sX POST --data '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["latest", false],"id":1}' --header 'Cache-Control: no-cache' --header 'Content-Type: application/json' --url http://localhost:8545)
 block_hash=$(printf "%s" "$RESULT" | jq .result.hash -r)
 
-dashboard_info=$(printf "\n4\n2\n%s\n" "$STAKE_ADDR" | /home/xero/dashboard)
+dashboard_info=$(printf "4\n2\n%s\n" "$STAKE_ADDR" | /home/xero/dashboard)
 dashboard_enodeid=$(printf "%s" "$dashboard_info" | grep "Node Id:" | sed 's/Node Id: //g')
 dashboard_ip=$(printf "%s" "$dashboard_info" | grep "Node Ip:" | sed 's/Node Ip: //g')
 
 ENODEID=$(/usr/sbin/geth-xero --exec "admin.nodeInfo.enode" attach ipc://./home/xero/.xerom/geth.ipc)
 
-if ! printf "%s\n" "$ENODEID" | grep -i "$dashboard_enodeid" ||
-    ! printf "%s\n" "$ENODEID" | grep -i "@$dashboard_ip"; then
+if ! printf "%s\n" "$ENODEID" | grep -i "${dashboard_enodeid:-"NOT SET"}" > /dev/null ||
+    ! printf "%s\n" "$ENODEID" | grep -i "@$dashboard_ip" > /dev/null; then
     mn_status_level="error"
     mn_status="Not Found"
 fi

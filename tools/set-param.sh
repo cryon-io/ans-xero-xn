@@ -42,7 +42,7 @@ case $PARAM in
         printf "PROJECT=%s" "$VALUE" >  "$BASEDIR/../project_id"
     ;;
     STAKE_ADDR)
-        printf "STAKE_ADDR=%s" "$VALUE" >  "$BASEDIR/../data/xero/stake_addr"
+        printf "%s" "$VALUE" >  "$BASEDIR/../data/xero/stake_addr"
     ;;
     ip)
         TEMP=$(sed "s/EXTERNAL_IP=.*/EXTERNAL_IP=$VALUE_FOR_SED/g" "$BASEDIR/../.env")
