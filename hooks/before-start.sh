@@ -21,7 +21,7 @@
 BASEDIR=$(dirname "$0")
 BOOTSTRAP_URL=""
 
-if [ ! -d "$BASEDIR/../data/xero/geth/" ]; then 
+if [ ! -d "$BASEDIR/../data/xero/geth/chaindata" ]; then 
     
     if [ -z "$BOOTSTRAP_URL" ]; then
         exit 0
