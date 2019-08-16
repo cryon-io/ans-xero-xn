@@ -36,6 +36,8 @@ chmod +x "$BASEDIR/"*.sh
 chmod +x "$BASEDIR/../geth"
 chmod +x "$BASEDIR/../dashboard"
 chmod +x "$BASEDIR/../enodeid"
+chmod +x "$BASEDIR/../removedb"
+
 echo "Configuring access permissions for UID: $INNER_UID"
 for row in $(printf "%s\n" "$DIRS" | jq -r '.writable[]'); do
     echo "Setting permission for path: $BASEDIR/../$row"

@@ -35,8 +35,8 @@ case $PARAM in
         fi
     ;;
     bootstrap)
-        TEMP=$(sed "s/BOOTSTRAP_URL=.*/BOOTSTRAP_URL=\"$VALUE_FOR_SED\"/g" "$BASEDIR/before-start.sh")
-        printf "%s" "$TEMP" > "$BASEDIR/before-start.sh"
+        TEMP=$(sed "s/BOOTSTRAP_URL=.*/BOOTSTRAP_URL=\"$VALUE_FOR_SED\"/g" "$BASEDIR/../hooks/before-start.sh")
+        printf "%s" "$TEMP" > "$BASEDIR/../hooks/before-start.sh"
     ;;
     PROJECT)
         printf "PROJECT=%s" "$VALUE" >  "$BASEDIR/../project_id"

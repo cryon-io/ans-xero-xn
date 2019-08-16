@@ -42,9 +42,10 @@ COPY get-dashboard.sh ./get-dashboard.sh
 COPY get-node-info.sh ./get-node-info.sh
 COPY get-version.sh ./get-version.sh
 COPY limits.conf ./limits.conf
+COPY removedb.sh ./removedb.sh
 
 # set execution rights
-RUN chmod +x ./get-node.sh ./get-node-info.sh ./get-version.sh /entrypoint.sh ./get-dashboard.sh
+RUN chmod +x ./get-node.sh ./get-node-info.sh ./get-version.sh /entrypoint.sh ./get-dashboard.sh ./removedb.sh
 
 # get latest geth
 RUN ./get-node.sh

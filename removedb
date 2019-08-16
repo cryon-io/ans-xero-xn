@@ -1,0 +1,10 @@
+#!/bin/sh
+BASEDIR=$(dirname "$0")
+
+if [ -f "$BASEDIR/project_id" ]; then
+    PROJECT=$(sed 's/PROJECT=//g' "$BASEDIR/project_id")
+else
+    frffl=""
+fi
+
+docker-compose -f "$BASEDIR/docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} run --entrypoint /home/xero/removedb.sh mn
