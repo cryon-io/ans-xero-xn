@@ -38,22 +38,24 @@ else
     frffl=""
 fi
 
-container=$(for c in $(docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} ps -q mn 2>/dev/null); do
-    if [ "$(docker inspect -f '{{.State.Running}}' "$c" 2>/dev/null)" = "true" ]; then
-        printf "%s" "$c"
-        break
-    fi
-done)
-
-if [ -z "$container" ]; then 
-    # masternode is not running
-    exit 1
-fi
+#container=$(for c in $(docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} ps -q mn 2>/dev/null); do
+#    if [ "$(docker inspect -f '{{.State.Running}}' "$c" 2>/dev/null)" = "true" ]; then
+#        printf "%s" "$c"
+#        break
+#    fi
+#done)
+#
+#if [ -z "$container" ]; then 
+#    # masternode is not running
+#    exit 1
+#fi
 sh "$BASEDIR/node-info.sh" > /dev/null
 get_latest_github_release "fallengravity/testnet"
 # shellcheck disable=SC1003
 ver=$(echo "$RESULT" | sed 's\v\\')
-if grep -q "VERSION: $ver" "$BASEDIR/../data/xero/node.info" > /dev/null; then
+container_ver=$(docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} run --entrypoint "cat /home/xero/version" mn)
+
+if printf "%s" "$container_ver" | grep -q "$ver" > /dev/null; then
     exit 0
 else
     if docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} build --no-cache; then
@@ -64,8 +66,9 @@ else
         fi
     fi
     sleep 10
-    sh "$BASEDIR/node-info.sh" > /dev/null
-    if grep -q "VERSION: $ver" "$BASEDIR/../data/xero/node.info" > /dev/null; then
+    
+    container_ver=$(docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} run --entrypoint "cat /home/xero/version" mn)
+    if printf "%s" "$container_ver" | grep -q "$ver" > /dev/null; then
         exit 0
     else 
         # failed to update masternode
