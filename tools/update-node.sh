@@ -50,7 +50,7 @@ fi
 #    exit 1
 #fi
 sh "$BASEDIR/node-info.sh" > /dev/null
-get_latest_github_release "fallengravity/testnet"
+get_latest_github_release "xero-official/go-xerom"
 # shellcheck disable=SC1003
 ver=$(echo "$RESULT" | sed 's\v\\')
 container_ver=$(docker-compose -f "$BASEDIR/../docker-compose.yml" ${frffl-"--project-name"} ${frffl-"$PROJECT"} run --entrypoint "cat /home/xero/version" mn)
